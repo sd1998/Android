@@ -186,7 +186,7 @@ public class OCFileListFragment extends ExtendedListFragment {
         return v;
     }
 
-    
+
     @Override
     public void onDetach() {
         setOnRefreshListener(null);

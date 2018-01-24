@@ -105,12 +105,12 @@ public class UploadFilesActivity extends FileActivity implements
         } else {
             mCurrentDir = Environment.getExternalStorageDirectory();
         }
-        
+
         mAccountOnCreation = getAccount();
-                
+
         /// USER INTERFACE
-            
-        // Drop-down navigation 
+
+        // Drop-down navigation
         mDirectories = new CustomArrayAdapter<String>(this,
                 R.layout.support_simple_spinner_dropdown_item);
         File currDir = mCurrentDir;
@@ -125,8 +125,8 @@ public class UploadFilesActivity extends FileActivity implements
 
         mFileListFragment = (LocalFileListFragment)
                 getSupportFragmentManager().findFragmentById(R.id.local_files_list);
-        
-        
+
+
         // Set input controllers
         mCancelBtn = (Button) findViewById(R.id.upload_files_btn_cancel);
         mCancelBtn.setOnClickListener(this);
@@ -150,7 +150,7 @@ public class UploadFilesActivity extends FileActivity implements
 
         // setup the toolbar
         setupToolbar();
-            
+
         // Action bar setup
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);   // mandatory since Android ICS, according to the
@@ -159,7 +159,7 @@ public class UploadFilesActivity extends FileActivity implements
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         actionBar.setListNavigationCallbacks(mDirectories, this);
-        
+
         // wait dialog
         if (mCurrentDialog != null) {
             mCurrentDialog.dismiss();
@@ -244,7 +244,7 @@ public class UploadFilesActivity extends FileActivity implements
         switch (item.getItemId()) {
             case android.R.id.home: {
                 if(mCurrentDir != null && mCurrentDir.getParentFile() != null){
-                    onBackPressed(); 
+                    onBackPressed();
                 }
                 break;
             }
@@ -254,22 +254,22 @@ public class UploadFilesActivity extends FileActivity implements
         return retval;
     }
 
-    
+
     @Override
     public boolean onNavigationItemSelected(int itemPosition, long itemId) {
         int i = itemPosition;
         while (i-- != 0) {
             onBackPressed();
         }
-        // the next operation triggers a new call to this method, but it's necessary to 
-        // ensure that the name exposed in the action bar is the current directory when the 
+        // the next operation triggers a new call to this method, but it's necessary to
+        // ensure that the name exposed in the action bar is the current directory when the
         // user selected it in the navigation list
         if (itemPosition != 0)
             getSupportActionBar().setSelectedNavigationItem(0);
         return true;
     }
 
-    
+
     @Override
     public void onBackPressed() {
         if (mDirectories.getCount() <= 1) {
@@ -279,14 +279,14 @@ public class UploadFilesActivity extends FileActivity implements
         popDirname();
         mFileListFragment.browseUp();
         mCurrentDir = mFileListFragment.getCurrentFolder();
-        
+
         if(mCurrentDir.getParentFile() == null){
-            ActionBar actionBar = getSupportActionBar(); 
+            ActionBar actionBar = getSupportActionBar();
             actionBar.setDisplayHomeAsUpEnabled(false);
-        } 
+        }
     }
 
-    
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // responsibility of restore is preferred in onCreate() before than in
@@ -297,7 +297,7 @@ public class UploadFilesActivity extends FileActivity implements
         Log_OC.d(TAG, "onSaveInstanceState() end");
     }
 
-    
+
     /**
      * Pushes a directory to the drop down list
      * @param directory to push
@@ -320,32 +320,32 @@ public class UploadFilesActivity extends FileActivity implements
         return !mDirectories.isEmpty();
     }
 
-    
+
     // Custom array adapter to override text colors
     private class CustomArrayAdapter<T> extends ArrayAdapter<T> {
-    
+
         public CustomArrayAdapter(UploadFilesActivity ctx, int view) {
             super(ctx, view);
         }
-    
+
         public View getView(int position, View convertView, ViewGroup parent) {
             View v = super.getView(position, convertView, parent);
-    
+
             ((TextView) v).setTextColor(getResources().getColorStateList(
                     android.R.color.white));
             return v;
         }
-    
+
         public View getDropDownView(int position, View convertView,
                 ViewGroup parent) {
             View v = super.getDropDownView(position, convertView, parent);
-    
+
             ((TextView) v).setTextColor(getResources().getColorStateList(
                     android.R.color.white));
-    
+
             return v;
         }
-    
+
     }
 
     /**
@@ -357,8 +357,8 @@ public class UploadFilesActivity extends FileActivity implements
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -366,7 +366,7 @@ public class UploadFilesActivity extends FileActivity implements
     public void onFileClicked(File file) {
         // nothing to do
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -378,8 +378,8 @@ public class UploadFilesActivity extends FileActivity implements
 
     /**
      * Performs corresponding action when user presses 'Cancel' or 'Upload' button
-     * 
-     * TODO Make here the real request to the Upload service ; will require to receive the account and 
+     *
+     * TODO Make here the real request to the Upload service ; will require to receive the account and
      * target folder where the upload must be done in the received intent.
      */
     @Override
@@ -387,7 +387,7 @@ public class UploadFilesActivity extends FileActivity implements
         if (v.getId() == R.id.upload_files_btn_cancel) {
             setResult(RESULT_CANCELED);
             finish();
-            
+
         } else if (v.getId() == R.id.upload_files_btn_upload) {
             new CheckAvailableSpaceTask(null).execute();
         }
@@ -397,7 +397,7 @@ public class UploadFilesActivity extends FileActivity implements
     /**
      * Asynchronous task checking if there is space enough to copy all the files chosen
      * to upload into the ownCloud local folder.
-     * 
+     *
      * Maybe an AsyncTask is not strictly necessary, but who really knows.
      */
     private class CheckAvailableSpaceTask extends AsyncTask<Void, Void, Boolean> {
@@ -420,11 +420,11 @@ public class UploadFilesActivity extends FileActivity implements
                 mCurrentDialog.show(getSupportFragmentManager(), WAIT_DIALOG_TAG);
             }
         }
-        
-        
+
+
         /**
          * Checks the available space
-         * 
+         *
          * @return     'True' if there is space enough.
          */
         @Override
@@ -446,10 +446,10 @@ public class UploadFilesActivity extends FileActivity implements
 
         /**
          * Updates the activity UI after the check of space is done.
-         * 
+         *
          * If there is not space enough. shows a new dialog to query the user if wants to move the
          * files instead of copy them.
-         * 
+         *
          * @param result        'True' when there is space enough to copy all the selected files.
          */
         @Override
@@ -536,12 +536,12 @@ public class UploadFilesActivity extends FileActivity implements
                 setResult(RESULT_CANCELED);
                 finish();
             }
-            
+
         } else {
             setResult(RESULT_CANCELED);
             finish();
         }
-    }    
+    }
 
-    
+
 }
