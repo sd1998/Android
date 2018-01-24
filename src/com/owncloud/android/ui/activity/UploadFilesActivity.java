@@ -458,7 +458,6 @@ public class UploadFilesActivity extends FileActivity implements
                 mCurrentDialog.dismiss();
                 mCurrentDialog = null;
             }
-
             if (result) {
                 // return the list of selected files (success)
                 Intent data = new Intent();
