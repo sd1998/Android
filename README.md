@@ -27,6 +27,7 @@ If you are interested in testing the new features before being released and give
 
 Note: If you want to use the ownCloud production version you have to leave the beta program, uninstall the app, and reinstall the production version.
 
+
 **F-Droid**
 
 1. Go to ownCloud tab in F-Droid.
