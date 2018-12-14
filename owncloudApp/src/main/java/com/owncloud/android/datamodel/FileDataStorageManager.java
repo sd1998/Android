@@ -4,6 +4,7 @@
  *   @author Bartek Przybylski
  *   @author Christian Schabesberger
  *   @author David González Verdugo
+ *   @author Shashvat Kedia
  *
  *   Copyright (C) 2012  Bartek Przybylski
  *   Copyright (C) 2018 ownCloud GmbH.
@@ -1010,6 +1011,28 @@ public class FileDataStorageManager {
         file.setParentId(FileDataStorageManager.ROOT_PARENT_ID);
         saveFile(file);
         return file;
+    }
+
+    public Vector<OCShare> getPublicSharesForAnAccount(String accountName){
+        Vector<OCShare> allShares = new Vector<OCShare>();
+        Vector<OCFile> files = getAllFiles(OCFile.ROOT_PATH);
+        for(OCFile file : files){
+            allShares.addAll(getPublicSharesForAFile(file.getRemotePath(),accountName));
+        }
+        return allShares;
+    }
+
+    private Vector<OCFile> getAllFiles(String path){
+        Vector<OCFile> files = getFolderContent(getFileByPath(path));
+        Vector<OCFile> temp = new Vector<OCFile>();
+        for(OCFile file : files){
+            if(file.isFolder()){
+                temp.addAll(getAllFiles(file.getRemotePath()));
+            //    files.addAll(getAllFiles(file.getRemotePath()));
+            }
+        }
+        files.addAll(temp);
+        return files;
     }
 
     private boolean fileExists(String cmp_key, String value) {

@@ -34,3 +34,153 @@ tasks.withType(Test) {
         events "passed", "skipped", "failed"
     }
 }
+
+android {
+    compileSdkVersion 26
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 26
+
+        manifestPlaceholders.versionCode = "20900300"
+        manifestPlaceholders.versionName = "2.9.3"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        // arguments to be passed to functional tests
+        testInstrumentationRunnerArgument "TEST_USER", "\"$System.env.OCTEST_APP_USERNAME\""
+        testInstrumentationRunnerArgument "TEST_PASSWORD", "\"$System.env.OCTEST_APP_PASSWORD\""
+        testInstrumentationRunnerArgument "TEST_USER2", "\"$System.env.OCTEST_APP_USERNAME2\""
+        testInstrumentationRunnerArgument "TEST_PASSWORD2", "\"$System.env.OCTEST_APP_PASSWORD2\""
+        testInstrumentationRunnerArgument "TEST_SERVER_URL", "\"$System.env.OCTEST_SERVER_BASE_URL\""
+        testInstrumentationRunnerArgument "TRUSTED", "\"$System.env.OCTEST_SERVER_TRUSTED\""
+        testInstrumentationRunnerArgument "TEST_USERNAME_ID", "\"$System.env.OCTEST_WEB_USERFIELD\""
+        testInstrumentationRunnerArgument "TEST_PASSWORD_ID", "\"$System.env.OCTEST_WEB_PASSFIELD\""
+        testInstrumentationRunnerArgument "TEST_SUBMIT_XPATH", "\"$System.env.OCTEST_WEB_SUBMITXPATH\""
+        testInstrumentationRunnerArgument "TEST_LOOKUP", "\"$System.env.OCTEST_SERVER_LOOKUP\""
+    }
+
+    // adapt structure from Eclipse to Gradle/Android Studio expectations;
+    // see http://tools.android.com/tech-docs/new-build-system/user-guide#TOC-Configuring-the-Structure
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+
+        // move whole local unit tests structure as a whole from src/test/* to test/*
+        test.setRoot('test')
+
+        // move whole instrumented tests structure as a whole from src/androidTest/* to androidTest/*
+        androidTest.setRoot('androidTest')
+
+        // Move the build types to build-types/<type>
+        // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
+        // This moves them out of them default location under src/<type>/... which would
+        // conflict with src/ being used by the main source set.
+        // Adding new build types or product flavors should be accompanied
+        // by a similar customization.
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        abortOnError false
+        disable 'MissingTranslation'
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+    }
+
+    adbOptions {
+        timeOutInMs(20 * 60 * 1000)
+    }
+
+    signingConfigs {
+        release {
+            if (System.env.OC_RELEASE_KEYSTORE) {
+                storeFile file(System.env.OC_RELEASE_KEYSTORE)  // use an absolute path
+                storePassword System.env.OC_RELEASE_KEYSTORE_PASSWORD
+                keyAlias System.env.OC_RELEASE_KEY_ALIAS
+                keyPassword System.env.OC_RELEASE_KEY_PASSWORD
+            }
+        }
+    }
+
+    buildTypes {
+
+        release {
+            if (System.env.OC_RELEASE_KEYSTORE) {
+                signingConfig signingConfigs.release
+            }
+        }
+
+        debug {
+            applicationIdSuffix ".debug"
+        }
+    }
+
+    applicationVariants.all { variant ->
+        def appName = System.env.OC_APP_NAME
+        setOutputFileName(variant, appName, project)
+    }
+}
+
+// Updates output file names of a given variant to format
+// [appName].[variant.versionName].[OC_BUILD_NUMBER]-[variant.name].apk.
+//
+// OC_BUILD_NUMBER is an environment variable read directly in this method. If undefined, it's not added.
+//
+// @param variant           Build variant instance which output file name will be updated.
+// @param appName           String to use as first part of the new file name. May be undefined, the original
+//                          project.archivesBaseName property will be used instead.
+// @param callerProject     Caller project.
+
+def setOutputFileName(variant, appName, callerProject) {
+    logger.info("Setting new name for output of variant $variant.name")
+
+    def originalFile = variant.outputs[0].outputFile
+    def originalName = originalFile.name
+    logger.info("$variant.name: originalName is $originalName")
+
+    def newName = ""
+
+    if (appName) {
+        newName += appName
+    } else {
+        newName += callerProject.archivesBaseName
+    }
+
+    def versionName = "$variant.mergedFlavor.versionName"
+    if (variant.mergedFlavor.manifestPlaceholders.versionName != null) {
+        versionName = "$variant.mergedFlavor.manifestPlaceholders.versionName"
+    }
+    if (variant.buildType.manifestPlaceholders.versionName != null) {
+        versionName = "$variant.buildType.manifestPlaceholders.versionName"
+    }
+    newName += "_$versionName"
+
+    def buildNumber = System.env.OC_BUILD_NUMBER
+    if (buildNumber) {
+        newName += ".$buildNumber"
+    }
+
+    newName += originalName.substring(callerProject.archivesBaseName.length())
+
+    logger.info("$variant.name: newName is $newName")
+
+    variant.outputs.all {
+        outputFileName = new File(".", newName)
+    }
+}

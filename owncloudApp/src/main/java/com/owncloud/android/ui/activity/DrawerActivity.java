@@ -4,6 +4,7 @@
  *   @author Andy Scherzinger
  *   @author Christian Schabesberger
  *   @author David González Verdugo
+ *   @author Shashvat Kedia
  *   Copyright (C) 2018 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -50,7 +51,10 @@ import com.owncloud.android.datamodel.UserProfile;
 import com.owncloud.android.datamodel.UserProfilesRepository;
 import com.owncloud.android.lib.common.OwnCloudAccount;
 import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.lib.resources.shares.OCShare;
 import com.owncloud.android.utils.DisplayUtils;
+
+import java.util.Vector;
 
 /**
  * Base class to handle setup of the drawer implementation including user switching and avatar fetching and fallback
@@ -61,6 +65,7 @@ public abstract class DrawerActivity extends ToolbarActivity {
     private static final String TAG = DrawerActivity.class.getSimpleName();
     private static final String KEY_IS_ACCOUNT_CHOOSER_ACTIVE = "IS_ACCOUNT_CHOOSER_ACTIVE";
     private static final String KEY_CHECKED_MENU_ITEM = "CHECKED_MENU_ITEM";
+    public static final String KEY_ALL_SHARES_FOR_AN_ACCOUNT = "ALL_SHARES_FOR_AN_ACCOUNT";
     private static final int ACTION_MANAGE_ACCOUNTS = 101;
     private static final int MENU_ORDER_ACCOUNT = 1;
     private static final int MENU_ORDER_ACCOUNT_FUNCTION = 2;
@@ -208,6 +213,14 @@ public abstract class DrawerActivity extends ToolbarActivity {
                             //     MainApp.showOnlyFilesOnDevice(true);
                             //     refreshDirectory();
                             //     break;
+                            case R.id.shared_by_link:
+                                Vector<OCShare> allShares = getStorageManager()
+                                        .getPublicSharesForAnAccount(getStorageManager().getAccount().name);
+                                Intent sharedByLinkIntent = new Intent(getApplicationContext(),
+                                        SharedByLinkActivity.class);
+                                sharedByLinkIntent.putExtra(KEY_ALL_SHARES_FOR_AN_ACCOUNT,allShares);
+                                startActivity(sharedByLinkIntent);
+                                break;
                             case R.id.nav_uploads:
                                 Intent uploadListIntent = new Intent(getApplicationContext(),
                                         UploadListActivity.class);

@@ -20,8 +20,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.owncloud.android">
 
-    <uses-sdk
-        tools:overrideLibrary="android.support.customtabs"/>
+    <uses-sdk tools:overrideLibrary="android.support.customtabs" />
 
     <!--
          GET_ACCOUNTS is needed for API < 23.
@@ -138,13 +137,11 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".files.services.CameraUploadsSyncJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true">
-        </service>
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"></service>
         <service
             android:name=".files.services.AvailableOfflineSyncJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE">
-        </service>
+            android:permission="android.permission.BIND_JOB_SERVICE"></service>
 
         <provider
             android:name=".providers.FileContentProvider"
@@ -152,8 +149,7 @@
             android:enabled="true"
             android:exported="true"
             android:label="@string/sync_string_files"
-            android:syncable="true"
-            />
+            android:syncable="true" />
         <provider
             android:name=".providers.UsersAndGroupsSearchProvider"
             android:authorities="@string/search_suggest_authority"
@@ -193,14 +189,15 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="oc" android:host="android.owncloud.com" />
+                <data
+                    android:host="android.owncloud.com"
+                    android:scheme="oc" />
             </intent-filter>
         </activity>
 
@@ -219,14 +216,16 @@
         <activity
             android:name=".ui.activity.ErrorsWhileCopyingHandlerActivity"
             android:theme="@style/Theme.ownCloud" />
-        <activity android:name=".ui.activity.LogHistoryActivity" android:configChanges="orientation|screenSize"/>
+        <activity
+            android:name=".ui.activity.LogHistoryActivity"
+            android:configChanges="orientation|screenSize" />
         <activity android:name=".ui.errorhandling.ErrorShowActivity" />
         <activity
             android:name=".ui.activity.UploadListActivity"
             android:theme="@style/Theme.ownCloud.Toolbar.Drawer" />
-        <activity android:name=".ui.activity.WhatsNewActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            />
+        <activity
+            android:name=".ui.activity.WhatsNewActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
 
         <receiver
             android:name=".broadcastreceivers.ConnectivityActionReceiver"
@@ -270,6 +269,8 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:theme="@style/Theme.ownCloud.Fullscreen" />
         <activity android:name=".ui.activity.PatternLockActivity" />
-        <activity android:name=".ui.activity.FingerprintActivity"/>
+        <activity android:name=".ui.activity.FingerprintActivity" />
+        <activity android:name=".ui.activity.SharedByLinkActivity"></activity>
     </application>
+
 </manifest>
