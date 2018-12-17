@@ -1013,8 +1013,8 @@ public class FileDataStorageManager {
         return file;
     }
 
-    public Vector<OCShare> getPublicSharesForAnAccount(String accountName){
-        Vector<OCShare> allShares = new Vector<OCShare>();
+    public ArrayList<OCShare> getPublicSharesForAnAccount(String accountName){
+        ArrayList<OCShare> allShares = new ArrayList<>();
         Vector<OCFile> files = getAllFiles(OCFile.ROOT_PATH);
         for(OCFile file : files){
             allShares.addAll(getPublicSharesForAFile(file.getRemotePath(),accountName));
