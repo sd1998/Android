@@ -2,6 +2,7 @@
  *   ownCloud Android client application
  *
  *   @author masensio
+ *   @author Shashvat Kedia
  *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -40,7 +41,8 @@ public enum UploadResult {
     SSL_RECOVERABLE_PEER_UNVERIFIED(13),
     SPECIFIC_FORBIDDEN(14),
     SPECIFIC_SERVICE_UNAVAILABLE(15),
-    SPECIFIC_UNSUPPORTED_MEDIA_TYPE(16);
+    SPECIFIC_UNSUPPORTED_MEDIA_TYPE(16),
+    DELAYED_FOR_NOT_CHARGING(17);
 
     private final int value;
 
@@ -89,6 +91,8 @@ public enum UploadResult {
                 return SPECIFIC_SERVICE_UNAVAILABLE;
             case 16:
                 return SPECIFIC_UNSUPPORTED_MEDIA_TYPE;
+            case 17:
+                return DELAYED_FOR_NOT_CHARGING;
         }
         return null;
     }
@@ -134,6 +138,8 @@ public enum UploadResult {
                 return SPECIFIC_SERVICE_UNAVAILABLE;
             case SPECIFIC_UNSUPPORTED_MEDIA_TYPE:
                 return SPECIFIC_UNSUPPORTED_MEDIA_TYPE;
+            case DELAYED_FOR_NOT_CHARGING:
+                return DELAYED_FOR_NOT_CHARGING;
             case UNKNOWN_ERROR:
                 if (result.getException() instanceof java.io.FileNotFoundException) {
                     return FILE_ERROR;

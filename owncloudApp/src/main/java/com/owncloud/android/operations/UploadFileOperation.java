@@ -3,6 +3,7 @@
  *
  *   @author David A. Velasco
  *   @author David González Verdugo
+ *   @author Shashvat Kedia
  *   Copyright (C) 2018 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -23,7 +24,10 @@ package com.owncloud.android.operations;
 
 import android.accounts.Account;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.BatteryManager;
 
 import com.owncloud.android.datamodel.OCFile;
 import com.owncloud.android.datamodel.OCUpload;
@@ -286,6 +290,11 @@ public class UploadFileOperation extends SyncOperation {
                 return new RemoteOperationResult(ResultCode.DELAYED_FOR_WIFI);
             }
 
+            if(delayForNotCharging()){
+                Log_OC.d(TAG,"Uploads delayed until device is connected to charger: " + getRemotePath());
+                return new RemoteOperationResult(ResultCode.DELAYED_FOR_NOT_CHARGING);
+            }
+
             /// check if the file continues existing before schedule the operation
             if (!originalFile.exists()) {
                 Log_OC.d(TAG, mOriginalStoragePath.toString() + " not exists anymore");
@@ -489,6 +498,24 @@ public class UploadFileOperation extends SyncOperation {
         );
     }
 
+    private boolean delayForNotCharging(){
+        boolean delayCameraUploadsPicture = (
+                isCameraUploadsPicture() &&  PreferenceManager.cameraPictureUploadWhileChargingOnly(mContext)
+        );
+        boolean delayCameraUploadsVideo = (
+                isCameraUploadsVideo() && PreferenceManager.cameraVideoUploadWhileChargingOnly(mContext)
+        );
+        return (
+                (delayCameraUploadsPicture || delayCameraUploadsVideo) &&
+                        !isCharging(mContext)
+                );
+    }
+
+    private boolean isCharging(Context context){
+        Intent checkPowerStatusIntent = context.registerReceiver(null,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        int plugged = checkPowerStatusIntent.getIntExtra(BatteryManager.EXTRA_STATUS,-1);
+        return ( plugged == BatteryManager.BATTERY_STATUS_CHARGING || plugged == BatteryManager.BATTERY_STATUS_FULL );
+    }
 
     /**
      * Checks the existence of the folder where the current file will be uploaded both

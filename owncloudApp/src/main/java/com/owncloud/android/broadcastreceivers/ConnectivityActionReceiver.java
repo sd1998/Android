@@ -4,6 +4,7 @@
  *   @author LukeOwncloud
  *   @author Christian Schabesberger
  *   @author David González Verdugo
+ *   @author Shashvat Kedia
  *   Copyright (C) 2018 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify

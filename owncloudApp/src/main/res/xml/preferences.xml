@@ -32,6 +32,9 @@
             android:key="camera_picture_uploads_on_wifi"
             android:title="@string/camera_picture_upload_on_wifi" />
         <com.owncloud.android.ui.CheckBoxPreferenceWithLongTitle
+            android:key="camera_picture_uploads_while_charging"
+            android:title="@string/prefs_camera_picture_upload_while_charging"/>
+        <com.owncloud.android.ui.CheckBoxPreferenceWithLongTitle
             android:key="camera_video_uploads"
             android:summary="@string/prefs_camera_video_upload_summary"
             android:title="@string/prefs_camera_video_upload" />
@@ -41,6 +44,9 @@
         <com.owncloud.android.ui.CheckBoxPreferenceWithLongTitle
             android:key="camera_video_uploads_on_wifi"
             android:title="@string/camera_video_upload_on_wifi" />
+        <com.owncloud.android.ui.CheckBoxPreferenceWithLongTitle
+            android:key="camera_video_uploads_while_charging"
+            android:title="@string/prefs_camera_video_picture_upload_while_charging"/>
         <com.owncloud.android.ui.PreferenceWithLongSummary
             android:key="camera_uploads_source_path"
             android:title="@string/prefs_camera_upload_source_path_title" />

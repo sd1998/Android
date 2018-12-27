@@ -57,6 +57,8 @@ public abstract class PreferenceManager {
     private static final String PREF__CAMERA_VIDEO_UPLOADS_PATH = "camera_video_uploads_path";
     private static final String PREF__CAMERA_UPLOADS_BEHAVIOUR = "camera_uploads_behaviour";
     private static final String PREF__CAMERA_UPLOADS_SOURCE = "camera_uploads_source_path";
+    private static final String PREF__CAMERA_PICTURE_UPLOADS_WHILE_CHARGING = "camera_picture_uploads_while_charging";
+    private static final String PREF__CAMERA_VIDEO_UPLOADS_WHILE_CHARGING = "camera_video_uploads_while_charging";
 
     public static boolean cameraPictureUploadEnabled(Context context) {
         return getDefaultSharedPreferences(context).getBoolean(PREF__CAMERA_PICTURE_UPLOADS_ENABLED, false);
@@ -74,6 +76,14 @@ public abstract class PreferenceManager {
         return getDefaultSharedPreferences(context).getBoolean(PREF__CAMERA_VIDEO_UPLOADS_WIFI_ONLY, false);
     }
 
+    public static boolean cameraPictureUploadWhileChargingOnly(Context context){
+        return getDefaultSharedPreferences(context).getBoolean(PREF__CAMERA_PICTURE_UPLOADS_WHILE_CHARGING,false);
+    }
+
+    public static boolean cameraVideoUploadWhileChargingOnly(Context context){
+        return getDefaultSharedPreferences(context).getBoolean(PREF__CAMERA_VIDEO_UPLOADS_WHILE_CHARGING,false);
+    }
+
     public static CameraUploadsConfiguration getCameraUploadsConfiguration(Context context) {
         CameraUploadsConfiguration result = new CameraUploadsConfiguration();
         SharedPreferences prefs = getDefaultSharedPreferences(context);
@@ -88,6 +98,12 @@ public abstract class PreferenceManager {
         );
         result.setWifiOnlyForVideos(
                 prefs.getBoolean(PREF__CAMERA_VIDEO_UPLOADS_WIFI_ONLY, false)
+        );
+        result.setWhileChargingOnlyForPictures(
+                prefs.getBoolean(PREF__CAMERA_PICTURE_UPLOADS_WHILE_CHARGING,false)
+        );
+        result.setWhileChargingOnlyForVideos(
+                prefs.getBoolean(PREF__CAMERA_VIDEO_UPLOADS_WHILE_CHARGING,false)
         );
         Account currentAccount = AccountUtils.getCurrentOwnCloudAccount(context);
         result.setUploadAccountName(
@@ -241,6 +257,8 @@ public abstract class PreferenceManager {
         private boolean mEnabledForVideos;
         private boolean mWifiOnlyForPictures;
         private boolean mWifiOnlyForVideos;
+        private boolean mWhileChargingOnlyForPictures;
+        private boolean mWhileChargingOnlyForVideos;
         private String mUploadAccountName;      // same for both audio & video
         private String mUploadPathForPictures;
         private String mUploadPathForVideos;
@@ -277,6 +295,22 @@ public abstract class PreferenceManager {
 
         public void setWifiOnlyForVideos(boolean wifiOnlyForVideos) {
             mWifiOnlyForVideos = wifiOnlyForVideos;
+        }
+
+        public boolean isEnabledWhileChargingOnlyForPictures(){
+            return mWhileChargingOnlyForPictures;
+        }
+
+        public void setWhileChargingOnlyForPictures(boolean whileChargingOnlyForPictures){
+            mWhileChargingOnlyForPictures = whileChargingOnlyForPictures;
+        }
+
+        public boolean isEnabledWhileChargingOnlyForVideos(){
+            return mWhileChargingOnlyForVideos;
+        }
+
+        public void setWhileChargingOnlyForVideos(boolean whileChargingOnlyForVideos){
+            mWhileChargingOnlyForVideos = whileChargingOnlyForVideos;
         }
 
         public String getUploadAccountName() {

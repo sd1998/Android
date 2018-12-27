@@ -5,6 +5,7 @@
  * @author David A. Velasco
  * @author David González Verdugo
  * @author Christian Schabesberger
+ * @author Shashvat Kedia
  * Copyright (C) 2011  Bartek Przybylski
  * Copyright (C) 2018 ownCloud GmbH.
  *
@@ -95,9 +96,11 @@ public class Preferences extends PreferenceActivity {
     private Preference mPrefCameraPictureUploads;
     private Preference mPrefCameraPictureUploadsPath;
     private Preference mPrefCameraPictureUploadsWiFi;
+    private Preference mPrefCameraPictureUploadsCharging;
     private Preference mPrefCameraVideoUploads;
     private Preference mPrefCameraVideoUploadsPath;
     private Preference mPrefCameraVideoUploadsWiFi;
+    private Preference mPrefCameraVideoUploadsCharging;
     private Preference mPrefCameraUploadsSourcePath;
     private Preference mPrefCameraUploadsBehaviour;
 
@@ -166,6 +169,7 @@ public class Preferences extends PreferenceActivity {
         mPrefCameraUploadsCategory = (PreferenceCategory) findPreference("camera_uploads_category");
 
         mPrefCameraPictureUploadsWiFi = findPreference("camera_picture_uploads_on_wifi");
+        mPrefCameraPictureUploadsCharging = findPreference("camera_picture_uploads_while_charging");
         mPrefCameraPictureUploads = findPreference("camera_picture_uploads");
 
         toggleCameraUploadsPictureOptions(true, ((CheckBoxPreference) mPrefCameraPictureUploads).isChecked());
@@ -196,6 +200,7 @@ public class Preferences extends PreferenceActivity {
         }
 
         mPrefCameraVideoUploadsWiFi = findPreference("camera_video_uploads_on_wifi");
+        mPrefCameraVideoUploadsCharging = findPreference("camera_video_uploads_while_charging");
         mPrefCameraVideoUploads = findPreference("camera_video_uploads");
         toggleCameraUploadsVideoOptions(true, ((CheckBoxPreference) mPrefCameraVideoUploads).isChecked());
 
@@ -498,6 +503,7 @@ public class Preferences extends PreferenceActivity {
     private void toggleCameraUploadsPictureOptions(Boolean initializing, Boolean isChecked) {
         if (isChecked) {
             mPrefCameraUploadsCategory.addPreference(mPrefCameraPictureUploadsWiFi);
+            mPrefCameraUploadsCategory.addPreference(mPrefCameraPictureUploadsCharging);
             mPrefCameraUploadsCategory.addPreference(mPrefCameraPictureUploadsPath);
             if (!initializing) {
                 showSimpleDialog(getString(R.string.proper_pics_folder_warning_camera_upload));
@@ -509,10 +515,11 @@ public class Preferences extends PreferenceActivity {
                             if (which == DialogInterface.BUTTON_NEGATIVE) {
                                 ((CheckBoxPreference) mPrefCameraPictureUploads).setChecked(true);
                                 mPrefCameraUploadsCategory.addPreference(mPrefCameraPictureUploadsWiFi);
+                                mPrefCameraUploadsCategory.addPreference(mPrefCameraPictureUploadsCharging);
                                 mPrefCameraUploadsCategory.addPreference(mPrefCameraPictureUploadsPath);
-
                             } else if (which == DialogInterface.BUTTON_POSITIVE) {
                                 mPrefCameraUploadsCategory.removePreference(mPrefCameraPictureUploadsWiFi);
+                                mPrefCameraUploadsCategory.removePreference(mPrefCameraPictureUploadsCharging);
                                 mPrefCameraUploadsCategory.removePreference(mPrefCameraPictureUploadsPath);
                                 mCameraUploadsHandler.updatePicturesLastSync(getApplicationContext(), 0);
                             }
@@ -520,6 +527,7 @@ public class Preferences extends PreferenceActivity {
                         });
             } else {
                 mPrefCameraUploadsCategory.removePreference(mPrefCameraPictureUploadsWiFi);
+                mPrefCameraUploadsCategory.removePreference(mPrefCameraPictureUploadsCharging);
                 mPrefCameraUploadsCategory.removePreference(mPrefCameraPictureUploadsPath);
             }
         }
@@ -535,6 +543,7 @@ public class Preferences extends PreferenceActivity {
     private void toggleCameraUploadsVideoOptions(Boolean initializing, Boolean isChecked) {
         if (isChecked) {
             mPrefCameraUploadsCategory.addPreference(mPrefCameraVideoUploadsWiFi);
+            mPrefCameraUploadsCategory.addPreference(mPrefCameraVideoUploadsCharging);
             mPrefCameraUploadsCategory.addPreference(mPrefCameraVideoUploadsPath);
             if (!initializing) {
                 showSimpleDialog(getString(R.string.proper_videos_folder_warning_camera_upload));
@@ -546,9 +555,11 @@ public class Preferences extends PreferenceActivity {
                             if (which == DialogInterface.BUTTON_NEGATIVE) {
                                 ((CheckBoxPreference) mPrefCameraVideoUploads).setChecked(true);
                                 mPrefCameraUploadsCategory.addPreference(mPrefCameraVideoUploadsWiFi);
+                                mPrefCameraUploadsCategory.addPreference(mPrefCameraVideoUploadsCharging);
                                 mPrefCameraUploadsCategory.addPreference(mPrefCameraVideoUploadsPath);
                             } else if (which == DialogInterface.BUTTON_POSITIVE) {
                                 mPrefCameraUploadsCategory.removePreference(mPrefCameraVideoUploadsWiFi);
+                                mPrefCameraUploadsCategory.removePreference(mPrefCameraVideoUploadsCharging);
                                 mPrefCameraUploadsCategory.removePreference(mPrefCameraVideoUploadsPath);
                                 mCameraUploadsHandler.updateVideosLastSync(getApplicationContext(), 0);
                             }
@@ -557,6 +568,7 @@ public class Preferences extends PreferenceActivity {
 
             } else {
                 mPrefCameraUploadsCategory.removePreference(mPrefCameraVideoUploadsWiFi);
+                mPrefCameraUploadsCategory.removePreference(mPrefCameraVideoUploadsCharging);
                 mPrefCameraUploadsCategory.removePreference(mPrefCameraVideoUploadsPath);
             }
         }

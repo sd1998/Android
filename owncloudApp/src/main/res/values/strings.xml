@@ -41,6 +41,8 @@
     <string name="prefs_camera_picture_upload_summary">Automatically upload pictures taken by camera</string>
     <string name="prefs_camera_video_upload">Video uploads</string>
     <string name="prefs_camera_video_upload_summary">Automatically upload videos recorded by camera</string>
+    <string name="prefs_camera_picture_upload_while_charging">Upload pictures only while charging</string>
+    <string name="prefs_camera_video_picture_upload_while_charging">Upload video only while charging</string>
     <string name="prefs_log_title">Enable logging</string>
     <string name="prefs_log_summary">This is used to log problems</string>
     <string name="prefs_log_title_history">Logging history</string>
